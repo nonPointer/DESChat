@@ -1,0 +1,22 @@
+{
+  "name": "deschat",
+  "version": "1.0.0",
+  "description": "Online chatroom based on DES Encryption and WebSocket.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nonPointer/DESChat.git"
+  },
+  "author": "nonPointer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nonPointer/DESChat/issues"
+  },
+  "homepage": "https://github.com/nonPointer/DESChat#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
