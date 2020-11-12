@@ -12,6 +12,7 @@ window.onload = function () {
     } else {
         // focus on username field
         usernameField.focus();
+        document.querySelector('#logout').setAttribute('disabled', 'disabled');
     }
 
     // check password length

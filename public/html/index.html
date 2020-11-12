@@ -19,45 +19,60 @@
 <body class="mdui-theme-primary-blue">
 <!--  mdui container  -->
 <div class="mdui-container">
-    <div class="mdui-typo" id="header">
-        <h1>DESChat<br><small>Yet another E2E chatroom.</small></h1>
-    </div>
+    <header>
+        <div class="mdui-typo" id="header">
+            <h1>DESChat<br><small>Yet another E2E chatroom.</small></h1>
+        </div>
+    </header>
 
     <div class="mdui-divider"></div>
-    <div class="mdui-col-xs-3">
 
-    </div>
-    <div class="mdui-col-xs-6">
-        <!--   set tabindex to 1 for auto scroll to tje bottom     -->
-        <ul id="messages" class="mdui-list-dense" tabindex="1"></ul>
-    </div>
-    <div class="mdui-col-xs-3">
-        <form>
-            <div class="mdui-textfield">
-                <i class="mdui-icon material-icons">account_circle</i>
-                <label class="mdui-textfield-label" for="username">Username</label>
-                <input class="mdui-textfield-input" id="username" type="text" autocomplete="on" autofocus/>
-            </div>
+    <main>
+        <div class="mdui-col-xs-3">
 
-            <div class="mdui-textfield">
-                <i class="mdui-icon material-icons">lock</i>
-                <label class="mdui-textfield-label" for="password">E2E Key</label>
-                <input class="mdui-textfield-input" id="password" type="text" autocomplete="off"/>
-                <div class="mdui-textfield-error">Non-standard cipher length</div>
-            </div>
+        </div>
 
-            <div class="mdui-textfield">
-                <i class="mdui-icon material-icons">textsms</i>
-                <label class="mdui-textfield-label" for="message">Message</label>
-                <input class="mdui-textfield-input" id="message" type="text" autocomplete="off"/>
-            </div>
+        <div class="mdui-col-xs-6">
+            <!--   set tabindex to 1 for auto scroll to tje bottom     -->
+            <ul id="messages" class="mdui-list-dense" tabindex="1"></ul>
+        </div>
 
-            <div id="buttonField">
-                <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" id="submit">Send</button>
-                <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" id="logout">Logout</button>
-            </div>
-        </form>
-    </div>
+        <div class="mdui-col-xs-3">
+            <form>
+                <div class="mdui-textfield">
+                    <i class="mdui-icon material-icons">account_circle</i>
+                    <label class="mdui-textfield-label" for="username">Username</label>
+                    <input class="mdui-textfield-input" id="username" type="text" autocomplete="on" autofocus required
+                           maxlength="12" pattern="^\w+$"
+                           oninvalid="document.querySelector('#submit').setAttribute('disabled', 'disabled')"/>
+                    <div class="mdui-textfield-error">Invalid character</div>
+                </div>
+
+                <div class="mdui-textfield">
+                    <i class="mdui-icon material-icons">lock</i>
+                    <label class="mdui-textfield-label" for="password">E2E Key</label>
+                    <input class="mdui-textfield-input" id="password" type="text" autocomplete="off"/>
+                    <div class="mdui-textfield-error">Non-standard cipher length</div>
+                </div>
+
+                <div class="mdui-textfield">
+                    <i class="mdui-icon material-icons">textsms</i>
+                    <label class="mdui-textfield-label" for="message">Message</label>
+                    <input class="mdui-textfield-input" id="message" type="text" autocomplete="off" required/>
+                </div>
+
+                <div id="buttonField">
+                    <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" id="submit"
+                            type="submit">Send
+                    </button>
+                    <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" id="logout">Logout
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div class="mdui-divider"></div>
 
     <footer>
         <div class="mdui-col-xs-12">
@@ -82,6 +97,8 @@
         let usr = $('#username');
         let msg = $('#message');
         let psw = $('#password');
+        let logout = $('#logout');
+        let msgList = $('#messages')
 
         // send message
         $('#submit').on('click', function () {
@@ -98,6 +115,8 @@
             msg.val(''); // clear msg
 
             usr.attr('disabled', 'disabled');
+            logout.removeAttr('disabled');
+
             return false;
         });
 
@@ -121,19 +140,43 @@
 
                 li.append(spanUsr, spanMsg);
                 li.setAttribute('class', 'mdui-list-item mdui-ripple');
-                $('#messages').append(li)
+                msgList.append(li)
+
+                // long press for copy content
+                let pressTimer;
+                li.onmouseup = function () {
+                    clearTimeout(pressTimer);
+                    return false;
+                };
+                li.onmousedown = function () {
+                    // Set timeout
+                    pressTimer = window.setTimeout(function () {
+                        let m = document.querySelector('#message');
+                        m.value = msg['msg'];
+                        m.select();
+                        document.execCommand("copy");
+                        m.value = '';
+                        document.body.focus();
+
+                        console.log('Copy: ' + msg['msg']);
+                        mdui.snackbar({
+                            message: 'Copied!'
+                        });
+                    }, 200);
+                    return false;
+                };
 
                 // scroll to the bottom
                 li.scrollIntoView();
             }
         });
 
-        // enable changing username
-        let logout = $('#logout');
+        // logout
         logout.on('click', function () {
             usr.removeAttr('disabled');
             usr.val('');
             usr.focus();
+            logout.attr('disabled', 'disabled');
 
             return false;
         });
