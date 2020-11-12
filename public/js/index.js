@@ -24,7 +24,7 @@ window.onload = function () {
         } else {
             passwordField.setCustomValidity('Non-standard cipher length');
         }
-        cipher.reportValidity();
+        passwordField.reportValidity();
     };
 
 }
