@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DESChat</title>
+
+    <!--  jQuery  -->
+    <script src="/js/jquery-3.5.1.min.js"></script>
+
+    <!--  mdui  -->
+    <script src="/js/mdui.min.js"></script>
+    <link rel="stylesheet" href="/css/mdui.min.css">
+
+    <!--  custom  -->
+    <script src="/js/DES.js"></script>
+    <script src="/js/index.js"></script>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body class="mdui-theme-primary-blue">
+<!--  mdui container  -->
+<div class="mdui-container">
+    <div class="mdui-typo" id="header">
+        <h1>DESChat<br><small>Yet another E2E chatroom.</small></h1>
+    </div>
+
+    <div class="mdui-divider"></div>
+    <div class="mdui-col-xs-3">
+
+    </div>
+    <div class="mdui-col-xs-6">
+        <!--   set tabindex to 1 for auto scroll to tje bottom     -->
+        <ul id="messages" class="mdui-list-dense" tabindex="1"></ul>
+    </div>
+    <div class="mdui-col-xs-3">
+        <form>
+            <div class="mdui-textfield">
+                <i class="mdui-icon material-icons">account_circle</i>
+                <label class="mdui-textfield-label" for="username">Username</label>
+                <input class="mdui-textfield-input" id="username" type="text" autocomplete="on" autofocus/>
+            </div>
+
+            <div class="mdui-textfield">
+                <i class="mdui-icon material-icons">lock</i>
+                <label class="mdui-textfield-label" for="password">E2E Key</label>
+                <input class="mdui-textfield-input" id="password" type="text" autocomplete="off"/>
+            </div>
+
+            <div class="mdui-textfield">
+                <i class="mdui-icon material-icons">textsms</i>
+                <label class="mdui-textfield-label" for="message">Message</label>
+                <input class="mdui-textfield-input" id="message" type="text" autocomplete="off"/>
+            </div>
+
+            <div id="buttonField">
+                <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" id="submit">Send</button>
+                <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" id="logout">Logout</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    $(function () {
+        // init websocket session
+        let socket = io();
+
+        // obtain handler
+        let usr = $('#username');
+        let msg = $('#message');
+
+        // send message
+        $('#submit').on('click', function () {
+            document.cookie = 'username=' + usr.val();
+
+            // e.preventDefault(); // prevents page reloading
+            let payload = JSON.stringify({
+                'usr': usr.val(),
+                'msg': msg.val()
+            });
+
+            socket.emit('msg', payload); // send msg
+            console.log(">\t" + payload);
+            msg.val(''); // clear msg
+
+            usr.attr('disabled', 'disabled');
+            return false;
+        });
+
+        // handle incoming message
+        socket.on('msg', function (msg) {
+            console.log("<\t" + msg);
+            msg = JSON.parse(msg);
+
+            // apply style
+            let li = document.createElement('li');
+
+            let spanUsr = document.createElement('span');
+            spanUsr.innerText = ''.concat('[', msg['usr'], ']');
+            spanUsr.setAttribute('class', 'spanUsr');
+
+            let spanMsg = document.createElement('span');
+            spanMsg.innerText = msg['msg'];
+            spanMsg.setAttribute('class', 'spanMsg');
+
+            li.append(spanUsr, spanMsg);
+            li.setAttribute('class', 'mdui-list-item mdui-ripple');
+            $('#messages').append(li)
+            li.scrollIntoView();
+        });
+
+        // enable changing username
+        let logout = $('#logout');
+        logout.on('click', function () {
+            usr.removeAttr('disabled');
+            usr.val('');
+            usr.focus();
+
+            return false;
+        });
+    })
+    ;
+</script>
+</html>

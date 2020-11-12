@@ -1,0 +1,27 @@
+.spanMsg {
+    margin-left: 0.25pc;
+}
+
+.spanUsr {
+    color: gray;
+}
+
+#messages {
+    font-size: medium;
+    height: 70vh;
+    overflow: scroll;
+    background-color: #e5e5e5;
+    border-radius: 2px;
+}
+
+#buttonField {
+    margin-top: 1pc;
+}
+
+#logout {
+    float: right;
+}
+
+.mdui-divider {
+    margin: 2pc auto;
+}
