@@ -14,5 +14,17 @@ window.onload = function () {
         usernameField.focus();
     }
 
+    // check password length
+    let passwordField = document.querySelector('#password');
+    passwordField.oninput = () => {
+        let passwordField = document.querySelector('#password');
+
+        if (passwordField.value.length === 8) {
+            passwordField.setCustomValidity('');
+        } else {
+            passwordField.setCustomValidity('Non-standard cipher length');
+        }
+        cipher.reportValidity();
+    };
 
 }

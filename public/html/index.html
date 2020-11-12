@@ -43,6 +43,7 @@
                 <i class="mdui-icon material-icons">lock</i>
                 <label class="mdui-textfield-label" for="password">E2E Key</label>
                 <input class="mdui-textfield-input" id="password" type="text" autocomplete="off"/>
+                <div class="mdui-textfield-error">Non-standard cipher length</div>
             </div>
 
             <div class="mdui-textfield">
@@ -71,6 +72,7 @@
         // obtain handler
         let usr = $('#username');
         let msg = $('#message');
+        let psw = $('#password');
 
         // send message
         $('#submit').on('click', function () {
@@ -79,7 +81,7 @@
             // e.preventDefault(); // prevents page reloading
             let payload = JSON.stringify({
                 'usr': usr.val(),
-                'msg': msg.val()
+                'msg': binToHex(strToBin(ECB(binToHex(strToBin(encodeURIComponent(msg.val()))), psw.val(), false, '')))
             });
 
             socket.emit('msg', payload); // send msg
@@ -94,22 +96,27 @@
         socket.on('msg', function (msg) {
             console.log("<\t" + msg);
             msg = JSON.parse(msg);
+            msg['msg'] = ECB(msg['msg'], psw.val(), true, '');
+            if (msg['msg'].length !== 0) {
+                msg['msg'] = decodeURIComponent(msg['msg']);
+                // apply style
+                let li = document.createElement('li');
 
-            // apply style
-            let li = document.createElement('li');
+                let spanUsr = document.createElement('span');
+                spanUsr.innerText = ''.concat('[', msg['usr'], ']');
+                spanUsr.setAttribute('class', 'spanUsr');
 
-            let spanUsr = document.createElement('span');
-            spanUsr.innerText = ''.concat('[', msg['usr'], ']');
-            spanUsr.setAttribute('class', 'spanUsr');
+                let spanMsg = document.createElement('span');
+                spanMsg.innerText = msg['msg'];
+                spanMsg.setAttribute('class', 'spanMsg');
 
-            let spanMsg = document.createElement('span');
-            spanMsg.innerText = msg['msg'];
-            spanMsg.setAttribute('class', 'spanMsg');
+                li.append(spanUsr, spanMsg);
+                li.setAttribute('class', 'mdui-list-item mdui-ripple');
+                $('#messages').append(li)
 
-            li.append(spanUsr, spanMsg);
-            li.setAttribute('class', 'mdui-list-item mdui-ripple');
-            $('#messages').append(li)
-            li.scrollIntoView();
+                // scroll to the bottom
+                li.scrollIntoView();
+            }
         });
 
         // enable changing username
