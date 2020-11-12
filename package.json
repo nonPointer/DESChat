@@ -18,7 +18,6 @@
   "homepage": "https://github.com/nonPointer/DESChat#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "mdui": "^1.0.1",
     "socket.io": "^3.0.1"
   }
 }
