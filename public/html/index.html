@@ -241,6 +241,7 @@
         // logout
         logout.on('click', function () {
             usr.removeAttr('disabled');
+            onlineUsers.delete(usr.val('').toString().trim());
             usr.val('');
             usr.focus();
             logout.attr('disabled', 'disabled');
