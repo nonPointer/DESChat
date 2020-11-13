@@ -30,12 +30,14 @@
 
     <main>
         <div class="mdui-col-xs-3">
-
+            <ul class="mdui-list" id="onlineUsers">
+            </ul>
         </div>
 
         <div class="mdui-col-xs-6">
             <!--   set tabindex to 1 for auto scroll to the bottom     -->
             <ul id="messages" class="mdui-list-dense" tabindex="1"></ul>
+            <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" id="clear">clear</button>
         </div>
 
         <div class="mdui-col-xs-3">
@@ -109,9 +111,12 @@
         let logout = $('#logout');
         let msgList = $('#messages');
         let clear = $('#clear');
+        let onlineUsers = new Set();
+        let onlineList = $('#onlineUsers');
 
         // send message
-        $('#submit').on('click', function () {
+        $('#submit').on('click', function (e) {
+            e.preventDefault();
             document.cookie = 'username=' + usr.val();
 
             // e.preventDefault(); // prevents page reloading
@@ -135,6 +140,30 @@
         socket.on('msg', function (msg) {
             console.log("<\t" + msg);
             msg = JSON.parse(msg);
+
+            // rend online users
+            while (!onlineList.empty()) {
+                onlineList.removeChild(onlineList.first());
+            }
+            onlineUsers.add(msg['usr'].toString());
+            onlineUsers.forEach(function (e) {
+                let li = document.createElement('li');
+                li.setAttribute('class', 'mdui-list-item mdui-ripple');
+                let div1 = document.createElement('div');
+                div1.setAttribute('class', 'mdui-list-item-avatar');
+                let img = document.createElement('img');
+                img.setAttribute('src', "https://www.gravatar.com/avatar/" + md5(e + '@gmail.com') + '?d=identicon');
+                console.log(e + '@gmail.com');
+                let div2 = document.createElement('div');
+                div2.setAttribute('class', 'mdui-list-item-content');
+                div2.innerText = e;
+
+                div1.appendChild(img);
+                li.appendChild(div1);
+                li.appendChild(div2);
+                onlineList.append(li);
+            })
+
             msg['msg'] = ECB(msg['msg'], psw.val(), true, '');
             if (msg['msg'].length !== 0) {
                 msg['msg'] = decodeURIComponent(msg['msg']);
@@ -184,7 +213,6 @@
                             }
                         ]
                     });
-
 
                     return false;
                 };

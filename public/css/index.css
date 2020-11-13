@@ -14,6 +14,12 @@
     border-radius: 2px;
 }
 
+#onlineUsers {
+    height: 60vh;
+    overflow: scroll;
+    border-radius: 2px;
+}
+
 #buttonField {
     margin-top: 1pc;
 }
