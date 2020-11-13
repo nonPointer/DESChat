@@ -9,8 +9,6 @@ http.listen(3000, function () {
 });
 
 // public path
-const jsPath = '/public/js/';
-const cssPath = '/public/css/';
 const htmlPath = '/public/html/';
 
 // routes
@@ -21,7 +19,6 @@ app.use(express.static('public')); // expose public resources
 
 // socket.io
 io.on('connection', function (socket) {
-    // console.log('an user connected');
     socket.on('msg', function (msg) {
         console.log('msg: ' + msg);
         io.emit('msg', msg);
