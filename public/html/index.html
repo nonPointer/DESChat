@@ -107,6 +107,7 @@
         let psw = $('#password');
         let logout = $('#logout');
         let msgList = $('#messages');
+        let clear = $('#clear');
 
         // send message
         $('#submit').on('click', function () {
@@ -201,7 +202,17 @@
 
             return false;
         });
-    })
-    ;
+
+        // clear
+        clear.on('click', function () {
+            while (!msgList.empty()) {
+                msgList.removeChild(msgList.first());
+            }
+            mdui.snackbar({
+                message: 'Cleared!'
+            });
+            return false;
+        })
+    });
 </script>
 </html>

@@ -25,3 +25,7 @@
 .mdui-divider {
     margin: 2pc auto;
 }
+
+#clear {
+    float: right;
+}
