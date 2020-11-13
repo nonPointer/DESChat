@@ -117,6 +117,22 @@
         // send message
         $('#submit').on('click', function (e) {
             e.preventDefault();
+
+            // check username
+            if (!usr.val().match(/^\w+$/)) {
+                usr.focus();
+                console.log('1!!');
+                usr.val(usr.val().toString().trim());
+                return false;
+            }
+
+            // check msg
+            if (!msg.val().trim().length > 0) {
+                msg.val(msg.val().trim());
+                msg.focus();
+                return false;
+            }
+
             document.cookie = 'username=' + usr.val();
 
             // e.preventDefault(); // prevents page reloading
