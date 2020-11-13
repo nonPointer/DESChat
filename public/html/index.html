@@ -83,6 +83,14 @@
             </div>
         </div>
     </footer>
+
+    <div class="mdui-dialog" id="dialog">
+        <div class="mdui-dialog-title" id="dialog-title"></div>
+        <div class="mdui-dialog-content" id="dialog-content"></div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>OK</button>
+        </div>
+    </div>
 </div>
 
 </body>
@@ -143,27 +151,39 @@
                 li.setAttribute('class', 'mdui-list-item mdui-ripple');
                 msgList.append(li)
 
-                // long press for copy content
+                // dialog
                 let pressTimer;
-                li.onmouseup = function () {
-                    clearTimeout(pressTimer);
-                    return false;
-                };
-                li.onmousedown = function () {
-                    // Set timeout
-                    pressTimer = window.setTimeout(function () {
-                        let m = document.querySelector('#message');
-                        m.value = msg['msg'];
-                        m.select();
-                        document.execCommand("copy");
-                        m.value = '';
-                        document.body.focus();
+                li.onclick = function () {
 
-                        console.log('Copy: ' + msg['msg']);
-                        mdui.snackbar({
-                            message: 'Copied!'
-                        });
-                    }, 200);
+                    console.log(msg);
+                    mdui.dialog({
+                        title: msg['usr'],
+                        content: msg['msg'],
+                        buttons: [
+                            {
+                                text: 'Copy',
+                                onClick: (e) => {
+                                    let m = document.querySelector('#message');
+                                    let t = m.value;
+                                    m.value = msg['msg'];
+                                    m.select();
+                                    document.execCommand("copy");
+                                    m.value = t;
+                                    document.body.focus();
+
+                                    console.log('Copy: ' + msg['msg']);
+                                    mdui.snackbar({
+                                        message: 'Copied!'
+                                    });
+                                }
+                            },
+                            {
+                                text: 'OK'
+                            }
+                        ]
+                    });
+
+
                     return false;
                 };
 
