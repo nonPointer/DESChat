@@ -157,7 +157,7 @@
             console.log("<\t" + msg);
             msg = JSON.parse(msg);
 
-            // rend online users
+            // render online users
             while (!onlineList.empty()) {
                 onlineList.removeChild(onlineList.first());
             }
@@ -180,6 +180,7 @@
                 onlineList.append(li);
             })
 
+            // render msg list
             msg['msg'] = ECB(msg['msg'], psw.val(), true, '');
             if (msg['msg'].length !== 0) {
                 msg['msg'] = decodeURIComponent(msg['msg']);
